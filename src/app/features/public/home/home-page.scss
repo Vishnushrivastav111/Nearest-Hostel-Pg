@@ -1,0 +1,162 @@
+:host {
+  display: block;
+}
+
+.hero,
+.section,
+.split {
+  padding: 2.4rem 5vw;
+}
+
+.hero {
+  background:
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.16), transparent 42%),
+    linear-gradient(180deg, #fff, var(--sand));
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--brand-dark);
+}
+
+.hero h1 {
+  font-size: clamp(2.1rem, 6vw, 3.6rem);
+  max-width: 14ch;
+  margin: 0.45rem 0 0.8rem;
+}
+
+.lede,
+.location-note,
+.hint {
+  max-width: 38rem;
+  color: var(--ink-soft);
+}
+
+.state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.25rem;
+}
+
+.primary,
+.secondary,
+.cta-band a {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primary,
+.cta-band a {
+  background: var(--brand);
+  color: #fff;
+}
+
+.cta-band a {
+  display: inline-flex;
+  align-items: center;
+}
+
+.secondary {
+  background: #fff;
+  color: var(--brand-dark);
+  border: 1px solid var(--line);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.state .primary,
+.state .secondary {
+  margin-top: 0.85rem;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.section-head a,
+.text-link {
+  color: var(--brand-dark);
+  font-weight: 700;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+.grid {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.35rem;
+}
+
+.skeleton {
+  height: 320px;
+  border-radius: var(--radius);
+  background: linear-gradient(90deg, #e8eeea, #f7faf8, #e8eeea);
+  animation: pulse 1.2s infinite;
+}
+
+.state {
+  margin-top: 1.5rem;
+  padding: 1.6rem;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
+}
+
+.split article {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.5rem;
+}
+
+.split li {
+  margin: 0.45rem 0;
+}
+
+.cta-band {
+  margin: 0 5vw 3rem;
+  border-radius: 28px;
+  background: var(--ink);
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.4rem 1.5rem;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.65;
+  }
+}
+
+@media (max-width: 800px) {
+  .split,
+  .cta-band {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: start;
+  }
+}

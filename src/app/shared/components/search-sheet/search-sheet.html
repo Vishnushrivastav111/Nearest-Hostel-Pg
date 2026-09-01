@@ -1,0 +1,116 @@
+<div class="overlay" role="dialog" aria-modal="true" aria-labelledby="search-title" (click)="close()">
+  <div class="sheet" (click)="$event.stopPropagation()">
+    <div class="head">
+      <button type="button" class="icon-btn" (click)="back()" [attr.aria-label]="step() === 'city' ? 'Close search' : 'Back'">
+        @if (step() === 'city') {
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        } @else {
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        }
+      </button>
+      <div>
+        <p class="kicker">Find a PG</p>
+        <h2 id="search-title">
+          @if (step() === 'city') { Choose a city }
+          @else if (step() === 'area') { Choose an area }
+          @else { Refine your search }
+        </h2>
+      </div>
+    </div>
+
+    <ol class="steps" aria-hidden="true">
+      <li [class.done]="step() !== 'city'" [class.current]="step() === 'city'">City</li>
+      <li [class.done]="step() === 'filters'" [class.current]="step() === 'area'">Area</li>
+      <li [class.current]="step() === 'filters'">Filters</li>
+    </ol>
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+
+    @if (step() === 'city') {
+      <button type="button" class="locate" (click)="useMyLocation()" [disabled]="locating()">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M12 8a4 4 0 100 8 4 4 0 000-8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        {{ locating() ? 'Detecting your location…' : 'Use my current location' }}
+      </button>
+      <label class="search-field">
+        <span class="sr-only">Search city</span>
+        <input
+          type="search"
+          [value]="cityQuery()"
+          (input)="onCityQuery($event)"
+          placeholder="Search city"
+          autocomplete="off"
+        />
+      </label>
+      @if (loadingPlaces()) {
+        <p class="hint">Loading cities…</p>
+      } @else if (!cities().length) {
+        <p class="hint">No published cities yet. Try using your location.</p>
+      } @else {
+        <div class="choices">
+          @for (item of cities(); track item) {
+            <button type="button" class="choice" [class.selected]="city() === item" (click)="pickCity(item)">
+              {{ item }}
+            </button>
+          }
+        </div>
+      }
+    }
+
+    @if (step() === 'area') {
+      <p class="hint">Showing areas in <strong>{{ city() }}</strong></p>
+      <div class="choices">
+        <button type="button" class="choice" [class.selected]="area() === ''" (click)="pickArea('')">
+          All of {{ city() }}
+        </button>
+        @for (item of areas(); track item) {
+          <button type="button" class="choice" [class.selected]="area() === item" (click)="pickArea(item)">
+            {{ item }}
+          </button>
+        }
+      </div>
+    }
+
+    @if (step() === 'filters') {
+      <p class="hint">
+        Searching
+        @if (area()) { {{ area() }}, }
+        {{ city() }}
+      </p>
+      <fieldset>
+        <legend>Hostel type</legend>
+        <div class="choices compact">
+          <button type="button" class="choice" [class.selected]="type() === ''" (click)="pickType('')">Any</button>
+          @for (item of types; track item) {
+            <button type="button" class="choice" [class.selected]="type() === item" (click)="pickType(item)">
+              {{ typeLabel(item) }}
+            </button>
+          }
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Budget</legend>
+        <div class="choices compact">
+          @for (item of budgets; track item.value) {
+            <button type="button" class="choice" [class.selected]="maxPrice() === item.value" (click)="pickBudget(item.value)">
+              {{ item.label }}
+            </button>
+          }
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Sharing</legend>
+        <div class="choices compact">
+          <button type="button" class="choice" [class.selected]="sharingType() === ''" (click)="pickSharing('')">Any</button>
+          @for (item of sharingTypes; track item) {
+            <button type="button" class="choice" [class.selected]="sharingType() === item" (click)="pickSharing(item)">
+              {{ sharingLabel(item) }}
+            </button>
+          }
+        </div>
+      </fieldset>
+      <button type="button" class="primary" (click)="submit()">Show matching PGs</button>
+    }
+  </div>
+</div>

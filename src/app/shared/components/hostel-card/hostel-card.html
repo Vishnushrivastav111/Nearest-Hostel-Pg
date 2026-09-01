@@ -1,0 +1,66 @@
+<article class="card">
+  <a [routerLink]="hostelPath()" class="media">
+    @if (coverSrc() && !imageFailed()) {
+      <img
+        [src]="coverSrc()"
+        [alt]="hostel().name"
+        loading="lazy"
+        (error)="onImageError()"
+      />
+      <div class="scrim"></div>
+    } @else {
+      <div class="placeholder" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <path d="M8 28L32 10l24 18v26H8V28z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+          <path d="M24 54V36h16v18" fill="none" stroke="currentColor" stroke-width="2.4"/>
+        </svg>
+      </div>
+    }
+    <div class="badges">
+      @if (hostel().isVerified) {
+        <span class="badge verified">Verified</span>
+      }
+      @if (hostel().isFeatured) {
+        <span class="badge featured">Featured</span>
+      }
+    </div>
+    <span class="type">{{ typeLabel() }}</span>
+    @if (distanceLabel()) {
+      <span class="distance">{{ distanceLabel() }} away</span>
+    }
+  </a>
+
+  <div class="body">
+    <p class="loc">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      {{ hostel().area }}, {{ hostel().city }}
+    </p>
+    <h3>
+      <a [routerLink]="hostelPath()">{{ hostel().name }}</a>
+    </h3>
+    @if (hostel().rating && hostel().reviewCount) {
+      <p class="rating">{{ hostel().rating | number: '1.1-1' }} · {{ hostel().reviewCount }} reviews</p>
+    }
+    @if (cardFacilities().length) {
+      <div class="facilities">
+        @for (facility of cardFacilities(); track facility) {
+          <span>{{ facility }}</span>
+        }
+        @if (extraCount() > 0) {
+          <span class="more">+{{ extraCount() }}</span>
+        }
+      </div>
+    }
+    <div class="foot">
+      <p class="price">
+        <small>From</small>
+        {{ price(hostel().startingPrice) }}
+        <span>/month</span>
+      </p>
+      <a [routerLink]="hostelPath()" [queryParams]="{ request: '1' }" class="solid">Request</a>
+    </div>
+  </div>
+</article>

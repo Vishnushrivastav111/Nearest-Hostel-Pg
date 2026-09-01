@@ -1,0 +1,69 @@
+<section class="wrap">
+  <div class="head">
+    <h1>Hostels</h1>
+    <a routerLink="/admin/hostels/new">Add hostel</a>
+  </div>
+  @if (error()) {
+    <p class="banner error" role="alert">{{ error() }}</p>
+  }
+  @if (notice()) {
+    <p class="banner success" role="status">{{ notice() }}</p>
+  }
+  @if (loading()) {
+    <p>Loading listings…</p>
+  } @else if (error() && !hostels().length) {
+    <div class="state"><p>{{ error() }}</p><button type="button" (click)="load()">Retry</button></div>
+  } @else if (!hostels().length) {
+    <div class="state">
+      <h2>No hostels yet</h2>
+      <p>Create a draft, add rooms and photos, then publish.</p>
+    </div>
+  } @else {
+    <div class="table">
+      <table>
+        <thead>
+          <tr>
+            <th>Hostel</th><th>City</th><th>Type</th><th>Price</th><th>Status</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (hostel of hostels(); track hostel.id) {
+            <tr>
+              <td>{{ hostel.name }}</td>
+              <td>{{ hostel.city }}</td>
+              <td>{{ hostel.type }}</td>
+              <td>₹{{ hostel.startingPrice }}</td>
+              <td>{{ hostel.status }}</td>
+              <td class="acts">
+                <a [routerLink]="['/admin/hostels', hostel.id, 'edit']">Edit</a>
+                <a [routerLink]="['/admin/hostels', hostel.id, 'rooms']">Rooms</a>
+                @if (hostel.status !== 'published') {
+                  <button type="button" (click)="publish(hostel.id)" [disabled]="busyId() === hostel.id">
+                    {{ actionLabel(hostel.id, 'publish') }}
+                  </button>
+                } @else {
+                  <button type="button" (click)="unpublish(hostel.id)" [disabled]="busyId() === hostel.id">
+                    {{ actionLabel(hostel.id, 'unpublish') }}
+                  </button>
+                }
+                <button type="button" (click)="deactivate(hostel.id)" [disabled]="busyId() === hostel.id">
+                  {{ actionLabel(hostel.id, 'deactivate') }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="cards">
+      @for (hostel of hostels(); track hostel.id) {
+        <article>
+          <h2>{{ hostel.name }}</h2>
+          <p>{{ hostel.city }} · {{ hostel.status }} · ₹{{ hostel.startingPrice }}</p>
+          <a [routerLink]="['/admin/hostels', hostel.id, 'edit']">Edit</a>
+          <a [routerLink]="['/admin/hostels', hostel.id, 'rooms']">Rooms</a>
+        </article>
+      }
+    </div>
+  }
+</section>

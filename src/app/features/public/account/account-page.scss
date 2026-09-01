@@ -1,0 +1,33 @@
+.wrap {
+  max-width: 640px;
+  padding: 2rem 5vw 4rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.lede,
+.email {
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.name {
+  margin: 0 0 0.2rem;
+  font-weight: 800;
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.ok {
+  color: #166534;
+}

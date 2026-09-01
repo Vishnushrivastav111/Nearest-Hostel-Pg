@@ -1,0 +1,15 @@
+<section class="wrap">
+  <h1>Commissions</h1>
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (!items().length) { <p>No commission records yet.</p> }
+  @for (item of items(); track item.id) {
+    <article>
+      <h2>₹{{ item.amount }} · {{ item.type }}</h2>
+      <p>{{ item.paymentStatus }} · hostel {{ item.hostelId }}</p>
+      @if (item.paymentStatus === 'pending') {
+        <button type="button" (click)="markPaid(item.id)">Mark paid</button>
+        <button type="button" (click)="cancel(item.id)">Cancel</button>
+      }
+    </article>
+  }
+</section>

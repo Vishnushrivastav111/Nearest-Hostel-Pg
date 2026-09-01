@@ -1,0 +1,23 @@
+<section class="wrap">
+  <h1>Amenity images</h1>
+  <p>These icons appear on public hostel pages for matching facilities.</p>
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (notice()) { <p class="ok">{{ notice() }}</p> }
+  @if (loading()) {
+    <p>Loading amenities…</p>
+  } @else {
+    @for (item of items(); track item.id) {
+      <article>
+        <h2>{{ item.name }}</h2>
+        <app-media-uploader
+          kind="image"
+          [folder]="folders.amenities"
+          [multiple]="false"
+          [items]="imagesFor(item)"
+          [label]="item.name + ' image'"
+          (itemsChange)="saveImage(item, $event)"
+        />
+      </article>
+    }
+  }
+</section>

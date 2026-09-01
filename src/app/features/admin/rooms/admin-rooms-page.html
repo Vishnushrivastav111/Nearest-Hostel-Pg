@@ -1,0 +1,35 @@
+<section class="wrap">
+  <a routerLink="/admin/hostels">← Hostels</a>
+  <h1>Rooms</h1>
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (notice()) { <p class="ok">{{ notice() }}</p> }
+  <form [formGroup]="form" (ngSubmit)="add()">
+    <input formControlName="roomName" placeholder="Room name" />
+    <select formControlName="sharingType">
+      @for (type of sharingTypes; track type) { <option [value]="type">{{ type }}</option> }
+    </select>
+    <input formControlName="price" type="number" min="0" placeholder="Price" />
+    <input formControlName="totalBeds" type="number" min="1" placeholder="Total beds" />
+    <input formControlName="availableBeds" type="number" min="0" placeholder="Available beds" />
+    <button type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Add room' }}</button>
+  </form>
+  @if (!rooms().length) {
+    <p>No rooms yet. Add one, then upload photos.</p>
+  }
+  @for (room of rooms(); track room.id) {
+    <article>
+      <h2>{{ room.roomName }}</h2>
+      <p>{{ room.sharingType }} · ₹{{ room.price }} · {{ room.availableBeds }}/{{ room.totalBeds }} beds</p>
+      <app-media-uploader
+        kind="image"
+        [folder]="folders.rooms"
+        [multiple]="true"
+        [items]="roomImages(room)"
+        label="Room photos"
+        hint="These photos appear on the public hostel page."
+        (itemsChange)="saveRoomImages(room, $event)"
+      />
+      <button type="button" (click)="deactivate(room.id)">Deactivate</button>
+    </article>
+  }
+</section>

@@ -1,0 +1,42 @@
+<section class="wrap">
+  <h1>Leads</h1>
+  <input [ngModel]="search()" (ngModelChange)="search.set($event)" placeholder="Search name, phone, or ID" />
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  <div class="layout">
+    <div class="list">
+      @if (!filtered().length) {
+        <p>No booking requests yet. When a visitor clicks Request to book, it will appear here.</p>
+      }
+      @for (lead of filtered(); track lead.id) {
+        <button type="button" (click)="open(lead)">
+          <strong>{{ lead.customerName }}</strong>
+          <span>{{ lead.status }} · {{ lead.hostelName || lead.hostelId }}</span>
+        </button>
+      }
+    </div>
+    @if (selected(); as lead) {
+      <article>
+        <h2>{{ lead.customerName }}</h2>
+        <p><a [href]="'tel:' + lead.customerPhone">{{ lead.customerPhone }}</a></p>
+        <p>{{ lead.customerEmail }}</p>
+        <p>Hostel: {{ lead.hostelName }} · Room: {{ lead.roomName || 'Any' }}</p>
+        <p>Occupants: {{ lead.occupants || 1 }}</p>
+        <p>{{ lead.message }}</p>
+        @if (contact(); as hostelContact) {
+          <p>Hostel contact: {{ hostelContact.contactName }} · <a [href]="'tel:' + hostelContact.phone">{{ hostelContact.phone }}</a></p>
+        }
+        <label>Internal notes
+          <textarea [ngModel]="notes()" (ngModelChange)="notes.set($event)" rows="3"></textarea>
+        </label>
+        <div class="acts">
+          @for (status of statuses; track status) {
+            <button type="button" (click)="setStatus(status)">{{ status }}</button>
+          }
+          <button type="button" (click)="convert()" [disabled]="converting() || lead.status === 'booked'">
+            Convert to booking
+          </button>
+        </div>
+      </article>
+    }
+  </div>
+</section>

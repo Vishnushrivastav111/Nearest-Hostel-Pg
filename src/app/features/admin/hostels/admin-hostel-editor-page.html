@@ -1,0 +1,107 @@
+<section class="wrap">
+  <a routerLink="/admin/hostels">← Hostels</a>
+  <h1>{{ hostelId() ? 'Edit hostel' : 'Add hostel' }}</h1>
+  <p class="status-line" [attr.data-status]="currentStatus()">
+    Listing status: <strong>{{ statusLabel() }}</strong>
+  </p>
+  @if (error()) {
+    <p class="error" role="alert">{{ error() }}</p>
+  }
+  @if (statusMessage()) {
+    <p class="success" role="status">{{ statusMessage() }}</p>
+  }
+  <form [formGroup]="form">
+    <h2>Basic</h2>
+    <label>Name <input formControlName="name" /></label>
+    <label>Type
+      <select formControlName="type">
+        @for (type of types; track type) {
+          <option [value]="type">{{ type }}</option>
+        }
+      </select>
+    </label>
+    <label>Description <textarea formControlName="description" rows="4"></textarea></label>
+    <h2>Location</h2>
+    <label>Address <input formControlName="address" /></label>
+    <label>Area <input formControlName="area" /></label>
+    <label>City <input formControlName="city" /></label>
+    <label>State <input formControlName="state" /></label>
+    <label>Pincode <input formControlName="pincode" /></label>
+    <label>Latitude <input formControlName="latitude" /></label>
+    <label>Longitude <input formControlName="longitude" /></label>
+    <label>Map URL <input formControlName="mapUrl" /></label>
+    <h2>Pricing</h2>
+    <label>Starting price <input formControlName="startingPrice" type="number" min="0" /></label>
+    <label>Deposit <input formControlName="deposit" type="number" min="0" /></label>
+    <h2>Facilities</h2>
+    <div class="chips">
+      @for (name of facilityOptions; track name) {
+        <button type="button" [class.on]="selectedFacilities().includes(name)" (click)="toggleFacility(name)">{{ name }}</button>
+      }
+    </div>
+    <label>Custom facility
+      <span class="row">
+        <input formControlName="customFacility" />
+        <button type="button" (click)="addCustomFacility()">Add</button>
+      </span>
+    </label>
+    <h2>Media</h2>
+    <p>JPG, PNG or WebP up to 10 MB. MP4, MOV or WebM up to 80 MB. Wait for the upload to finish, then save or publish.</p>
+    <app-media-uploader
+      kind="image"
+      [folder]="folders.hostels"
+      [multiple]="true"
+      [allowFeatured]="true"
+      [items]="images()"
+      [featuredPublicId]="coverPublicId()"
+      [disabled]="saving()"
+      label="Hostel photos"
+      hint="The featured photo is the main image on the public listing."
+      (itemsChange)="onImages($event)"
+      (featuredChange)="onFeatured($event)"
+      (uploadingChange)="onPhotosBusy($event)"
+    />
+    <app-media-uploader
+      kind="video"
+      [folder]="folders.videos"
+      [multiple]="true"
+      [items]="videos()"
+      [disabled]="saving()"
+      label="Hostel videos"
+      hint="Videos play on the public hostel details page."
+      (itemsChange)="onVideos($event)"
+      (uploadingChange)="onVideosBusy($event)"
+    />
+    <h2>Private hostel contact</h2>
+    <p>Never shown on the public website.</p>
+    <label>Contact person <input formControlName="contactName" /></label>
+    <label>Phone <input formControlName="contactPhone" /></label>
+    <label>Email <input formControlName="contactEmail" /></label>
+    <h2>SEO</h2>
+    <label>Slug <input formControlName="slug" /></label>
+    <label>SEO title <input formControlName="seoTitle" /></label>
+    <label>SEO description <textarea formControlName="seoDescription" rows="2"></textarea></label>
+    <div class="flags">
+      <label class="check">
+        <input type="checkbox" formControlName="isFeatured" />
+        Featured
+      </label>
+      <label class="check">
+        <input type="checkbox" formControlName="isVerified" />
+        Verified
+      </label>
+      <label class="check">
+        <input type="checkbox" formControlName="isActive" />
+        Active
+      </label>
+    </div>
+    <div class="acts">
+      <button type="button" (click)="save('draft')" [disabled]="saving() || mediaBusy()">
+        {{ savePhase() === 'saving-draft' ? 'Saving draft…' : mediaBusy() ? 'Waiting for upload…' : 'Save draft' }}
+      </button>
+      <button type="button" (click)="save('published')" [disabled]="saving() || mediaBusy()">
+        {{ savePhase() === 'publishing' ? 'Publishing…' : mediaBusy() ? 'Waiting for upload…' : 'Publish' }}
+      </button>
+    </div>
+  </form>
+</section>

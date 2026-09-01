@@ -1,0 +1,19 @@
+.wrap { max-width: 1100px; }
+.head { display: flex; justify-content: space-between; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.head a, .state button, .acts button, .acts a, article a {
+  background: #0f766e; color: #fff; border: 0; border-radius: 999px; padding: 0.45rem 0.8rem;
+  font-weight: 600; text-decoration: none; display: inline-block; margin: 0.15rem; cursor: pointer;
+}
+.table { overflow-x: auto; margin-top: 1rem; background: #fff; border-radius: 16px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--line); }
+.cards { display: none; }
+.state { margin-top: 1rem; padding: 1rem; background: #fff; border-radius: 16px; }
+.banner { margin: 0.75rem 0 0; border-radius: 10px; padding: 0.7rem 0.85rem; }
+.banner.error { color: #b91c1c; background: #fef2f2; }
+.banner.success { color: #166534; background: #f0fdf4; }
+@media (max-width: 768px) {
+  .table { display: none; }
+  .cards { display: grid; gap: 0.8rem; margin-top: 1rem; }
+  .cards article { background: #fff; border-radius: 16px; padding: 1rem; }
+}

@@ -1,0 +1,41 @@
+<section class="gallery">
+  @if (current(); as photo) {
+    @if (!heroFailed()) {
+    <button type="button" class="hero" (click)="openLightbox()" [attr.aria-label]="'Open ' + alt()">
+      <img [src]="src(photo)" [alt]="alt()" (error)="onImageError()" />
+    </button>
+    } @else {
+      <div class="hero placeholder">Photo unavailable</div>
+    }
+  } @else {
+    <div class="hero placeholder">No photos yet</div>
+  }
+
+  @if (images().length > 1) {
+    <div class="thumbs">
+      @for (image of images(); track image.publicId; let i = $index) {
+        <button type="button" (click)="select(i)" [class.on]="index() === i">
+          <img [src]="thumb(image)" [alt]="alt() + ' ' + (i + 1)" />
+        </button>
+      }
+    </div>
+  }
+
+  @if (videos().length) {
+    <div class="videos">
+      <h2>Videos</h2>
+      @for (video of videos(); track video.publicId) {
+        <video [src]="video.secureUrl" controls playsinline preload="metadata"></video>
+      }
+    </div>
+  }
+</section>
+
+@if (lightboxOpen() && current(); as photo) {
+  <div class="lightbox" role="dialog" aria-modal="true" (click)="closeLightbox()">
+    <button type="button" class="nav prev" (click)="$event.stopPropagation(); previous()">‹</button>
+    <img [src]="src(photo, 1800)" [alt]="alt()" (click)="$event.stopPropagation()" />
+    <button type="button" class="nav next" (click)="$event.stopPropagation(); next()">›</button>
+    <button type="button" class="close" (click)="closeLightbox()">Close</button>
+  </div>
+}

@@ -1,0 +1,12 @@
+<section class="wrap">
+  <h1>Bookings</h1>
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (!items().length) { <p>No bookings yet. Convert a lead after the customer takes the room.</p> }
+  @for (booking of items(); track booking.id) {
+    <article>
+      <h2>{{ booking.customerName }}</h2>
+      <p>{{ booking.hostelName }} · ₹{{ booking.monthlyRent }} · {{ booking.status }}</p>
+      <button type="button" (click)="cancel(booking.id)">Cancel</button>
+    </article>
+  }
+</section>

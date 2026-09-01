@@ -1,0 +1,240 @@
+.page {
+  width: min(1120px, calc(100% - 8vw));
+  margin: 0 auto;
+  padding: 1.4rem 0 5.5rem;
+}
+
+.crumb,
+.desc,
+.addr,
+.meta,
+.hint {
+  color: var(--ink-soft);
+}
+
+.crumb {
+  margin: 0 0 1rem;
+}
+
+.crumb a {
+  font-weight: 700;
+  color: var(--brand-dark);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  grid-template-areas:
+    'gallery aside'
+    'content aside';
+  gap: 1.6rem;
+  align-items: start;
+}
+
+.gallery {
+  grid-area: gallery;
+}
+
+.aside {
+  grid-area: aside;
+  position: sticky;
+  top: 7.2rem;
+}
+
+.content {
+  grid-area: content;
+}
+
+.intro {
+  margin: 0.35rem 0 0.8rem;
+}
+
+.meta {
+  margin: 0 0 0.4rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.addr {
+  margin: 0.45rem 0 0;
+}
+
+.price-box {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 1.2rem 1.15rem 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.kicker,
+.hint {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.price {
+  margin: 0.2rem 0 0.55rem;
+  font-weight: 800;
+  color: var(--brand-dark);
+  font-size: 1.35rem;
+}
+
+.price span {
+  color: var(--ink-soft);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.primary,
+.rooms button,
+.sticky button {
+  background: var(--brand);
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.primary {
+  width: 100%;
+  margin-top: 0.85rem;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0 0;
+}
+
+.badges span,
+.amenity {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--sand);
+  border-radius: 999px;
+  padding: 0.32rem 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.amenity img {
+  width: 22px;
+  height: 22px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+h2 {
+  margin: 1.5rem 0 0.7rem;
+  font-size: 1.2rem;
+}
+
+.rooms {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1rem;
+}
+
+.rooms article {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 0.9rem;
+  background: #fff;
+}
+
+.room-photos {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  margin-bottom: 0.7rem;
+}
+
+.room-photos img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.rooms button {
+  margin-top: 0.7rem;
+  background: var(--ink);
+}
+
+.map-link {
+  display: inline-flex;
+  margin-top: 0.35rem;
+  font-weight: 700;
+  color: var(--brand-dark);
+}
+
+.review {
+  border-top: 1px solid var(--line);
+  padding: 0.85rem 0;
+}
+
+.sticky {
+  display: none;
+}
+
+.state {
+  padding: 2.4rem 1.5rem;
+  text-align: center;
+  background: #fff;
+  border-radius: 22px;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'gallery'
+      'aside'
+      'content';
+  }
+
+  .aside {
+    position: static;
+  }
+
+  .sticky {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(246, 248, 247, 0.94);
+    padding: 0.75rem 0 0.3rem;
+  }
+
+  .sticky p {
+    margin: 0;
+    font-weight: 800;
+    color: var(--brand-dark);
+  }
+
+  .sticky small {
+    color: var(--ink-soft);
+  }
+
+  .sticky button {
+    padding: 0.8rem 1.1rem;
+  }
+}

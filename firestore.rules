@@ -1,0 +1,224 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Admin authorization:
+    //   Email allowlist OR custom claim { admin: true } / role == admin.
+    //   Keep emails in sync with src/app/core/constants/admin-emails.ts
+    //   Frontend role checks are never sufficient by themselves.
+    //   Customers must not read adminHostelContacts, commissions, drafts, or other leads.
+    //
+    // Collection: users / {uid}
+    //   uid, name, email?, phone?, role: admin|customer, isActive, createdAt, updatedAt
+    //
+    // Collection: hostels / {hostelId}
+    //   Public marketplace fields. status: draft|published|unpublished
+    //   Private contact details are stored in adminHostelContacts, not on this document.
+    //
+    // Collection: rooms / {roomId}
+    //   hostelId, hostelStatus, price, beds, availability
+    //
+    // Collection: adminHostelContacts / {hostelId}
+    //   Private hostel contact for admin operations only
+    //   contactName, phone, email?, notes?, updatedAt, updatedBy
+    //
+    // Collection: leads, bookings, commissions — admin; customers may read own leads
+    // Collection: reviews — public read when approved
+    // Collection: facilities — public catalog when isActive
+    // Collection: notifications — recipient only
+    // Collection: settings/app — admin; settings/public — public read
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdminEmail() {
+      return request.auth.token.email is string
+        && request.auth.token.email.lower() in [
+          'vishnushrivastav26072003@gmail.com',
+          'realvishnu111@gmail.com'
+        ];
+    }
+
+    function hasAdminClaim() {
+      return request.auth.token.admin == true || request.auth.token.role == 'admin';
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (isAdminEmail() || hasAdminClaim());
+    }
+
+    function isUid(uid) {
+      return isAuthenticated() && request.auth.uid == uid;
+    }
+
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string
+        && email.matches('^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$');
+    }
+
+    function isValidIndianMobile(phone) {
+      return phone is string && phone.matches('^[6-9][0-9]{9}$');
+    }
+
+    function isNonEmptyString(value, minLen, maxLen) {
+      return value is string && value.size() >= minLen && value.size() <= maxLen;
+    }
+
+    function isOptionalString(data, field, minLen, maxLen) {
+      return !(field in data)
+        || data[field] == null
+        || (data[field] is string && data[field].size() >= minLen && data[field].size() <= maxLen);
+    }
+
+    function isValidUser(data) {
+      return data.uid is string
+        && data.uid == request.auth.uid
+        && isNonEmptyString(data.name, 1, 80)
+        && data.role in ['admin', 'customer']
+        && data.isActive is bool
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && isOptionalString(data, 'phone', 10, 15)
+        && (
+          !('email' in data)
+          || data.email == null
+          || isValidEmail(data.email)
+        );
+    }
+
+    function isValidPublicHostel(data) {
+      return data.status == 'published'
+        && data.isActive == true
+        && data.isDeleted == false;
+    }
+
+    function isValidLeadCreate(data) {
+      return isNonEmptyString(data.customerName, 1, 80)
+        && isValidIndianMobile(data.customerPhone)
+        && data.source == 'website'
+        && data.status == 'new'
+        && data.hostelId is string
+        && data.hostelId.size() > 0
+        && (
+          !('customerEmail' in data)
+          || data.customerEmail == null
+          || isValidEmail(data.customerEmail)
+        )
+        && (
+          !isAuthenticated()
+            ? (!('userId' in data) || data.userId == null)
+            : data.userId == request.auth.uid
+        );
+    }
+
+    function isValidHostelContact(data) {
+      return data.hostelId is string
+        && isNonEmptyString(data.contactName, 1, 80)
+        && isValidIndianMobile(data.phone)
+        && data.updatedAt is timestamp
+        && data.updatedBy is string
+        && isOptionalString(data, 'email', 5, 120)
+        && isOptionalString(data, 'notes', 0, 2000);
+    }
+
+    match /users/{uid} {
+      allow read: if isAdmin() || isUid(uid);
+      allow create: if isUid(uid)
+        && isValidUser(request.resource.data)
+        && request.resource.data.uid == uid
+        && (
+          request.resource.data.role == 'customer'
+          || (isAdmin() && request.resource.data.role == 'admin')
+        );
+      allow update: if isAdmin()
+        || (isUid(uid)
+            && areImmutableFieldsUnchanged(['uid', 'role', 'createdAt', 'createdBy'])
+            && request.resource.data.role == resource.data.role
+            && isValidUser(request.resource.data));
+      allow delete: if isAdmin();
+    }
+
+    match /hostels/{hostelId} {
+      allow read: if isAdmin() || isValidPublicHostel(resource.data);
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /rooms/{roomId} {
+      allow read: if isAdmin()
+        || (resource.data.isDeleted == false
+            && resource.data.isActive == true
+            && resource.data.hostelStatus == 'published');
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /adminHostelContacts/{hostelId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin() && isValidHostelContact(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /leads/{leadId} {
+      allow read: if isAdmin()
+        || (resource.data.userId is string && isUid(resource.data.userId));
+      allow create: if isValidLeadCreate(request.resource.data);
+      allow update, delete: if isAdmin();
+
+      match /history/{historyId} {
+        allow read: if isAdmin();
+        allow create: if isAdmin();
+        allow update, delete: if false;
+      }
+    }
+
+    match /bookings/{bookingId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    match /commissions/{commissionId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    match /reviews/{reviewId} {
+      allow read: if isAdmin()
+        || resource.data.status == 'approved'
+        || (resource.data.userId is string && isUid(resource.data.userId));
+      allow create: if isAuthenticated()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5;
+      allow update, delete: if isAdmin();
+    }
+
+    match /facilities/{facilityId} {
+      allow read: if resource.data.isActive == true || isAdmin();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAdmin()
+        || (resource.data.recipientId is string && isUid(resource.data.recipientId));
+      allow update: if isAdmin()
+        || (resource.data.recipientId is string
+            && isUid(resource.data.recipientId)
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead', 'readAt', 'updatedAt']));
+      allow create, delete: if isAdmin();
+    }
+
+    match /settings/{documentId} {
+      allow read: if documentId == 'public' || isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

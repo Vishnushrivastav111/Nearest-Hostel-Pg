@@ -1,0 +1,177 @@
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f3f6f5;
+}
+
+.mast {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #102033;
+  color: #fff;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 5vw;
+}
+
+.brand {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.brand span {
+  color: #5eead4;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: auto;
+  font-weight: 600;
+  color: #cbd5e1;
+  min-width: 0;
+}
+
+.nav a {
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.nav a.active,
+.nav a:hover {
+  color: #fff;
+  background: rgba(94, 234, 212, 0.16);
+}
+
+.account {
+  display: none;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.avatar {
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #0f766e;
+  font-weight: 800;
+}
+
+.email {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.account button,
+.drawer-out {
+  background: #0f766e;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.burger {
+  margin-left: auto;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: transparent;
+  display: grid;
+  place-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.burger span {
+  display: block;
+  width: 16px;
+  height: 2px;
+  background: #fff;
+}
+
+.drawer {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.35rem 5vw 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawer-email {
+  margin: 0 0 0.45rem;
+  color: #94a3b8;
+  font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drawer a,
+.drawer-out {
+  text-align: left;
+  padding: 0.75rem 0.15rem;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.drawer a.active {
+  color: #5eead4;
+}
+
+.drawer-out {
+  margin-top: 0.35rem;
+  width: fit-content;
+}
+
+.main {
+  flex: 1;
+  padding: 1.4rem 5vw 3rem;
+}
+
+@media (min-width: 980px) {
+  .burger,
+  .drawer {
+    display: none;
+  }
+
+  .account {
+    display: flex;
+  }
+
+  .nav {
+    flex: 1;
+    justify-content: flex-end;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 979px) {
+  .desktop {
+    display: none;
+  }
+}

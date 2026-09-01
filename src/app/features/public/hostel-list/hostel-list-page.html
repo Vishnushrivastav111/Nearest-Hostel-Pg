@@ -1,0 +1,45 @@
+<section class="page">
+  <header class="head">
+    <div>
+      <p class="eyebrow">{{ eyebrow() }}</p>
+      <h1>{{ title() }}</h1>
+      <p class="lede">{{ subtitle() }}</p>
+    </div>
+    @if (count(); as total) {
+      <p class="count">{{ total }} {{ total === 1 ? 'listing' : 'listings' }}</p>
+    }
+  </header>
+
+  @if (chips().length) {
+    <div class="chips">
+      @for (chip of chips(); track chip) {
+        <span>{{ chip }}</span>
+      }
+    </div>
+  }
+
+  @if (state().loading) {
+    <div class="grid">
+      @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+        <div class="skeleton"></div>
+      }
+    </div>
+  } @else if (state().error) {
+    <div class="state">
+      <h2>Could not load hostels</h2>
+      <p>{{ state().error }}</p>
+      <button type="button" class="primary" (click)="load()">Retry</button>
+    </div>
+  } @else if (!state().data?.length) {
+    <div class="state">
+      <h2>No PGs found</h2>
+      <p>{{ emptyMessage() }} Use the search bar at the top to try another city or area.</p>
+    </div>
+  } @else {
+    <div class="grid">
+      @for (item of state().data; track item.hostel.id) {
+        <app-hostel-card [hostel]="item.hostel" [distanceKm]="item.distanceKm" />
+      }
+    </div>
+  }
+</section>

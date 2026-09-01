@@ -1,0 +1,101 @@
+<div class="shell">
+  <header class="mast">
+    <div class="location-bar">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.8"/>
+      </svg>
+      @if (locating()) {
+        <p>Detecting your current location…</p>
+      } @else if (placeLabel()) {
+        <p class="place">
+          <span>Current location</span>
+          <strong>{{ placeLabel() }}</strong>
+        </p>
+      } @else {
+        <p>{{ locationError() || 'Location not available yet' }}</p>
+      }
+      <button type="button" (click)="refreshLocation()" [disabled]="locating()">
+        {{ locating() ? 'Updating…' : 'Update' }}
+      </button>
+    </div>
+
+    <div class="topbar">
+    <a routerLink="/" class="brand" (click)="closeMenus()">Nearest<span>Hostel</span></a>
+
+    <button type="button" class="search-chip" (click)="openSearch()" [class.active]="searchOpen()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.2-3.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Search city or area</span>
+    </button>
+
+    <nav class="nav desktop">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/hostels" routerLinkActive="active">Hostels</a>
+      <a routerLink="/about" routerLinkActive="active">About</a>
+      <a routerLink="/contact" routerLinkActive="active">Contact</a>
+    </nav>
+
+    <div class="actions">
+      @if (userEmail()) {
+        <div class="menu-wrap">
+          <button type="button" class="avatar" (click)="toggleAccount($event)" [attr.aria-expanded]="accountOpen()">
+            {{ initials() }}
+          </button>
+          @if (accountOpen()) {
+            <div class="dropdown" (click)="$event.stopPropagation()">
+              <p class="email" [title]="userEmail()!">{{ userEmail() }}</p>
+              <a routerLink="/account" (click)="closeMenus()">Account</a>
+              @if (isAdmin()) {
+                <a routerLink="/admin/dashboard" (click)="closeMenus()">Dashboard</a>
+              }
+              <button type="button" (click)="signOut()" [disabled]="signingOut()">
+                {{ signingOut() ? 'Signing out…' : 'Logout' }}
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <a routerLink="/login" class="ghost">Login</a>
+      }
+
+      <button type="button" class="burger" (click)="toggleNav()" [attr.aria-expanded]="navOpen()" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    </div>
+  </header>
+
+  @if (navOpen()) {
+    <nav class="drawer">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeMenus()">Home</a>
+      <a routerLink="/hostels" routerLinkActive="active" (click)="closeMenus()">Hostels</a>
+      <a routerLink="/about" routerLinkActive="active" (click)="closeMenus()">About</a>
+      <a routerLink="/contact" routerLinkActive="active" (click)="closeMenus()">Contact</a>
+    </nav>
+  }
+
+  <main class="main">
+    <router-outlet />
+  </main>
+
+  <footer class="footer">
+    <div>
+      <p class="brand">Nearest<span>Hostel</span></p>
+      <p>Verified PGs and hostels, managed by our team. Browse listings and request a room.</p>
+    </div>
+    <div class="links">
+      <a routerLink="/privacy-policy">Privacy</a>
+      <a routerLink="/terms">Terms</a>
+      <a routerLink="/contact">Contact</a>
+      @if (userEmail()) {
+        <button type="button" class="linkish" (click)="signOut()">Logout</button>
+      } @else {
+        <a routerLink="/login">Login</a>
+      }
+    </div>
+  </footer>
+</div>
+
+@if (searchOpen()) {
+  <app-search-sheet />
+}

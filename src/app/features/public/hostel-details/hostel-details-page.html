@@ -1,0 +1,117 @@
+<section class="page">
+  @if (loading()) {
+    <div class="state">Loading hostel…</div>
+  } @else if (hostel(); as item) {
+    <p class="crumb"><a routerLink="/hostels">Hostels</a> / {{ item.area }}, {{ item.city }}</p>
+    <div class="layout">
+      <div class="gallery">
+        <app-media-gallery [images]="galleryImages()" [videos]="galleryVideos()" [alt]="item.name" />
+      </div>
+      <aside class="aside">
+        <div class="price-box">
+          <p class="kicker">Starting from</p>
+          <p class="price">{{ price(item.startingPrice) }}<span>/month</span></p>
+          <p class="hint">Request a room and our team will contact you.</p>
+          <button type="button" class="primary" (click)="openRequest()">Request a room</button>
+        </div>
+      </aside>
+      <div class="content">
+        <div class="intro">
+          <p class="meta">{{ typeLabel(item.type) }} · {{ item.area }}, {{ item.city }}</p>
+          <h1>{{ item.name }}</h1>
+          <p class="addr">{{ item.address }}</p>
+          @if (item.isVerified || item.isFeatured || item.rating) {
+            <p class="badges">
+              @if (item.isVerified) {
+                <span>Verified</span>
+              }
+              @if (item.isFeatured) {
+                <span>Featured</span>
+              }
+              @if (item.rating && item.reviewCount) {
+                <span>{{ item.rating | number: '1.1-1' }} · {{ item.reviewCount }} reviews</span>
+              }
+            </p>
+          }
+        </div>
+        <p class="desc">{{ item.description || 'Details will be updated soon.' }}</p>
+        <h2>Facilities</h2>
+        <div class="chips">
+          @for (facility of item.facilities; track facility) {
+            <span class="amenity">
+              @if (amenitySrc(facility); as src) {
+                <img [src]="src" [alt]="facility" />
+              }
+              {{ facility }}
+            </span>
+          }
+          @if (!item.facilities.length) {
+            <p>Facilities will be listed after the admin updates this hostel.</p>
+          }
+        </div>
+        <h2>Rooms</h2>
+        @if (!rooms().length) {
+          <p class="desc">No rooms are listed as available yet.</p>
+        } @else {
+          <div class="rooms">
+            @for (room of rooms(); track room.id) {
+              <article>
+                @if (roomImages(room).length) {
+                  <div class="room-photos">
+                    @for (photo of roomImages(room); track photo.publicId) {
+                      <img [src]="photo.secureUrl" [alt]="room.roomName" />
+                    }
+                  </div>
+                }
+                <h3>{{ room.roomName }}</h3>
+                <p>{{ sharingLabel(room.sharingType) }} · {{ room.availableBeds }} beds open</p>
+                <p class="price">{{ price(room.price) }}</p>
+                <button type="button" (click)="openRequest(room.id)">Request this room</button>
+              </article>
+            }
+          </div>
+        }
+        @if (item.mapUrl || (item.latitude && item.longitude) || item.address) {
+          <h2>Location</h2>
+          <p>{{ item.address }}</p>
+          @if (item.mapUrl) {
+            <a class="map-link" [href]="item.mapUrl" target="_blank" rel="noopener">Open map</a>
+          }
+        }
+        @if (item.nearbyInfo) {
+          <h2>Nearby</h2>
+          <p class="desc">{{ item.nearbyInfo }}</p>
+        }
+        @if (reviews().length) {
+          <h2>Reviews</h2>
+          @for (review of reviews(); track review.id) {
+            <article class="review">
+              <p><strong>{{ review.userName }}</strong> · {{ review.rating }}/5</p>
+              <p>{{ review.comment }}</p>
+            </article>
+          }
+        }
+      </div>
+    </div>
+    <div class="sticky">
+      <div>
+        <p>{{ price(item.startingPrice) }}</p>
+        <small>/month</small>
+      </div>
+      <button type="button" (click)="openRequest()">Request a room</button>
+    </div>
+    @if (requestOpen()) {
+      <app-request-room
+        [hostel]="item"
+        [rooms]="rooms()"
+        [selectedRoomId]="selectedRoomId()"
+        (closed)="requestOpen.set(false)"
+      />
+    }
+  } @else if (error()) {
+    <div class="state">
+      <p>{{ error() }}</p>
+      <a routerLink="/hostels">Back to hostels</a>
+    </div>
+  }
+</section>

@@ -1,0 +1,116 @@
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">Verified hostels &amp; PGs</p>
+    <h1>Find a PG near you in minutes</h1>
+    <p class="lede">
+      Nearby listings appear automatically from your location. Use search at the top to pick a city
+      and area.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">Near you</p>
+      <h2>{{ nearbyTitle() }}</h2>
+    </div>
+    @if (nearest().data?.length) {
+      <button type="button" class="text-link" (click)="seeAllNearby()">See all</button>
+    }
+  </div>
+
+  @if (nearest().loading || locating()) {
+    <div class="grid">
+      @for (item of [1, 2, 3]; track item) {
+        <div class="skeleton"></div>
+      }
+    </div>
+  } @else if (nearest().error) {
+    <div class="state">
+      <p>{{ nearest().error }}</p>
+      <p class="hint">You can also search by city from the bar at the top.</p>
+      <button type="button" class="primary" (click)="useMyLocation()">Try location again</button>
+    </div>
+  } @else if (!nearest().data?.length && !hasPlace()) {
+    <div class="state">
+      <h3>Allow location to see nearby PGs</h3>
+      <p>We’ll sort published listings by distance. To search another place, use the bar at the top.</p>
+      <button type="button" class="primary" (click)="useMyLocation()">Use my location</button>
+    </div>
+  } @else if (!nearest().data?.length) {
+    <div class="state">
+      <h3>No PGs found nearby</h3>
+      <p>Use search at the top to pick a city and area, or browse all listings.</p>
+      <a routerLink="/hostels" class="secondary">Browse all</a>
+    </div>
+  } @else {
+    <div class="grid">
+      @for (item of nearest().data; track item.hostel.id) {
+        <app-hostel-card [hostel]="item.hostel" [distanceKm]="item.distanceKm" />
+      }
+    </div>
+  }
+</section>
+
+<section class="section">
+  <div class="section-head">
+    <div>
+      <p class="eyebrow">Featured</p>
+      <h2>Popular listings</h2>
+    </div>
+    <a routerLink="/hostels">See all</a>
+  </div>
+
+  @if (featured().loading) {
+    <div class="grid">
+      @for (item of [1, 2, 3]; track item) {
+        <div class="skeleton"></div>
+      }
+    </div>
+  } @else if (featured().error) {
+    <div class="state">
+      <p>{{ featured().error }}</p>
+      <button type="button" class="primary" (click)="loadFeatured()">Retry</button>
+    </div>
+  } @else if (!featured().data?.length) {
+    <div class="state">
+      <h3>No hostels available right now</h3>
+      <p>There are no published listings yet. Try again shortly.</p>
+      <button type="button" class="primary" (click)="loadFeatured()">Retry</button>
+    </div>
+  } @else {
+    <div class="grid">
+      @for (hostel of featured().data; track hostel.id) {
+        <app-hostel-card [hostel]="hostel" />
+      }
+    </div>
+  }
+</section>
+
+<section class="split">
+  <article>
+    <h2>Why people use us</h2>
+    <ul>
+      <li>Nearest PGs first, using your live location</li>
+      <li>One search for city, area, and filters</li>
+      <li>Verified photos, rooms, and starting prices</li>
+    </ul>
+  </article>
+  <article>
+    <h2>How it works</h2>
+    <ol>
+      <li>We show PGs near your location</li>
+      <li>Search at the top to choose a city and area</li>
+      <li>Open a listing and request a room</li>
+    </ol>
+  </article>
+</section>
+
+<section class="cta-band">
+  <div>
+    <h2>Ready to find a room?</h2>
+    <p>Browse published PGs and send a request in under a minute.</p>
+  </div>
+  <a routerLink="/hostels">Browse hostels</a>
+</section>

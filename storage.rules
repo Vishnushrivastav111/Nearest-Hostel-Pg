@@ -1,0 +1,85 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Keep this email list in sync with src/app/core/constants/admin-emails.ts
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdminEmail() {
+      return request.auth.token.email is string
+        && request.auth.token.email.lower() in [
+          'vishnushrivastav26072003@gmail.com',
+          'realvishnu111@gmail.com'
+        ];
+    }
+
+    function hasAdminClaim() {
+      return request.auth.token.admin == true || request.auth.token.role == 'admin';
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (isAdminEmail() || hasAdminClaim());
+    }
+
+    function isPublicHostelMedia(hostelId) {
+      let hostel = firestore.get(/databases/(default)/documents/hostels/$(hostelId)).data;
+      return hostel.status == 'published'
+        && hostel.isActive == true
+        && hostel.isDeleted == false;
+    }
+
+    function isPublicRoomMedia(roomId) {
+      let room = firestore.get(/databases/(default)/documents/rooms/$(roomId)).data;
+      return room.isDeleted == false
+        && room.isActive == true
+        && room.hostelStatus == 'published';
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/(jpeg|jpg|png|webp)');
+    }
+
+    function isVideo() {
+      return request.resource.contentType.matches('video/(mp4|webm|quicktime)');
+    }
+
+    function imageSizeOk() {
+      return request.resource.size <= 10 * 1024 * 1024;
+    }
+
+    function videoSizeOk() {
+      return request.resource.size <= 80 * 1024 * 1024;
+    }
+
+    match /hostels/{hostelId}/images/{fileName} {
+      allow read: if isAdmin() || isPublicHostelMedia(hostelId);
+      allow write: if isAdmin() && isImage() && imageSizeOk();
+      allow delete: if isAdmin();
+    }
+
+    match /hostels/{hostelId}/videos/{fileName} {
+      allow read: if isAdmin() || isPublicHostelMedia(hostelId);
+      allow write: if isAdmin() && isVideo() && videoSizeOk();
+      allow delete: if isAdmin();
+    }
+
+    match /rooms/{roomId}/images/{fileName} {
+      allow read: if isAdmin() || isPublicRoomMedia(roomId);
+      allow write: if isAdmin() && isImage() && imageSizeOk();
+      allow delete: if isAdmin();
+    }
+
+    match /users/{uid}/{allPaths=**} {
+      allow read: if isAdmin() || (isAuthenticated() && request.auth.uid == uid);
+      allow write: if (isAdmin() || (isAuthenticated() && request.auth.uid == uid))
+        && isImage()
+        && imageSizeOk();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

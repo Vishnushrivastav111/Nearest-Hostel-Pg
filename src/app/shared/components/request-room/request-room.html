@@ -1,0 +1,74 @@
+<div class="overlay" role="dialog" aria-modal="true" aria-labelledby="request-title">
+  <div class="sheet">
+    <div class="head">
+      <h2 id="request-title">Request a room</h2>
+      <button type="button" class="close" (click)="close()" aria-label="Close">Close</button>
+    </div>
+
+    @if (success()) {
+      <div class="success" role="status">
+        <h3>Your booking request has been submitted.</h3>
+        <p>The admin can see this request. Taking you back now.</p>
+        <button type="button" class="primary" (click)="close()">Back</button>
+      </div>
+    } @else {
+      <p class="lede">{{ hostel().name }} · {{ hostel().area }}, {{ hostel().city }}</p>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <label>
+          Name
+          <input formControlName="customerName" autocomplete="name" />
+          @if (form.controls.customerName.touched && form.controls.customerName.invalid) {
+            <span class="field-error">Please enter your name.</span>
+          }
+        </label>
+        <label>
+          Mobile
+          <input
+            formControlName="customerPhone"
+            inputmode="tel"
+            autocomplete="tel"
+            placeholder="10-digit number, +91 is OK"
+            (blur)="normalizePhone()"
+          />
+          @if (form.controls.customerPhone.touched && form.controls.customerPhone.invalid) {
+            <span class="field-error">Enter a valid 10-digit Indian mobile number.</span>
+          }
+        </label>
+        <label>
+          Email (optional)
+          <input formControlName="customerEmail" type="email" autocomplete="email" />
+          @if (form.controls.customerEmail.touched && form.controls.customerEmail.invalid) {
+            <span class="field-error">Please enter a valid email address.</span>
+          }
+        </label>
+        <label>
+          Room
+          <select formControlName="roomId">
+            <option value="">Any available room</option>
+            @for (room of rooms(); track room.id) {
+              <option [value]="room.id">{{ room.roomName }} · ₹{{ room.price }}</option>
+            }
+          </select>
+        </label>
+        <label>
+          Move-in date
+          <input formControlName="moveInDate" type="date" />
+        </label>
+        <label>
+          Occupants
+          <input formControlName="occupants" type="number" min="1" max="12" />
+        </label>
+        <label>
+          Message
+          <textarea formControlName="message" rows="3"></textarea>
+        </label>
+        @if (errorMessage()) {
+          <p class="error" role="alert">{{ errorMessage() }}</p>
+        }
+        <button class="primary" type="submit" [disabled]="submitting()">
+          {{ submitting() ? 'Submitting…' : 'Request to book' }}
+        </button>
+      </form>
+    }
+  </div>
+</div>

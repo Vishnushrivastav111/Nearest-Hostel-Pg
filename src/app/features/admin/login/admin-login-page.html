@@ -1,0 +1,78 @@
+<section class="wrap">
+  <a routerLink="/" class="back">← Back to site</a>
+  <div class="card">
+    <p class="eyebrow">Account</p>
+    <h1>Sign in</h1>
+    <p class="lede">
+      Admin inboxes open the dashboard. Any other email signs in as a customer and can browse and
+      request a room.
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="signIn($event)">
+      <label>
+        Email
+        <input
+          formControlName="email"
+          type="email"
+          autocomplete="username"
+          placeholder="you@email.com"
+        />
+        @if (showEmailError()) {
+          <span class="hint">Enter a valid email address.</span>
+        }
+      </label>
+      <label>
+        Password
+        <span class="password-row">
+          <input
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            autocomplete="current-password"
+            placeholder="At least 6 characters"
+          />
+          <button type="button" class="ghost" (click)="togglePassword()">
+            {{ showPassword() ? 'Hide' : 'Show' }}
+          </button>
+        </span>
+        @if (showPasswordError()) {
+          <span class="hint">Password must be at least 6 characters.</span>
+        }
+      </label>
+      <label class="remember">
+        <input formControlName="remember" type="checkbox" />
+        Keep me signed in after refresh
+      </label>
+
+      @if (errorMessage()) {
+        <p class="error" role="alert">{{ errorMessage() }}</p>
+      }
+
+      @if (resetMessage()) {
+        <p class="success" role="status">{{ resetMessage() }}</p>
+      }
+
+      <button class="primary" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Please wait…' : 'Sign in' }}
+      </button>
+    </form>
+
+    <div class="actions">
+      <button
+        class="secondary"
+        type="button"
+        [disabled]="submitting()"
+        (click)="createAccount($event)"
+      >
+        Create account
+      </button>
+      <button
+        class="secondary"
+        type="button"
+        [disabled]="submitting()"
+        (click)="resetPassword($event)"
+      >
+        Forgot password
+      </button>
+    </div>
+  </div>
+</section>

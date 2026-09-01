@@ -1,0 +1,22 @@
+<section class="wrap">
+  <a routerLink="/">← Home</a>
+  <h1>Your profile</h1>
+  <p class="lede">Manage the photo shown on your account.</p>
+  @if (error()) { <p class="error">{{ error() }}</p> }
+  @if (notice()) { <p class="ok">{{ notice() }}</p> }
+  @if (profile(); as user) {
+    <article class="card">
+      <p class="name">{{ user.name }}</p>
+      <p class="email">{{ user.email }}</p>
+      <app-media-uploader
+        kind="image"
+        [folder]="folders.profiles"
+        [multiple]="false"
+        [items]="photos()"
+        label="Profile photo"
+        hint="JPG, PNG or WebP. This photo is shown on your account."
+        (itemsChange)="savePhoto($event)"
+      />
+    </article>
+  }
+</section>

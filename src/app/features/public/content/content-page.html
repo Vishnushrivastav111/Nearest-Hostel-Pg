@@ -1,0 +1,14 @@
+<article class="page">
+  <p class="eyebrow">Nearest Hostel</p>
+  <h1>{{ copy().title }}</h1>
+  <p class="intro">{{ copy().intro }}</p>
+
+  @for (section of copy().sections; track section.heading) {
+    <section class="block">
+      <h2>{{ section.heading }}</h2>
+      @for (paragraph of section.paragraphs; track paragraph) {
+        <p>{{ paragraph }}</p>
+      }
+    </section>
+  }
+</article>

@@ -1,0 +1,45 @@
+<section class="panel">
+  <div class="head">
+    <div>
+      <p class="eyebrow">Admin</p>
+      <h1>Dashboard</h1>
+    </div>
+    <div class="actions">
+      <button type="button" (click)="load()" [disabled]="loading()">Refresh</button>
+      <a routerLink="/admin/hostels/new">Add hostel</a>
+    </div>
+  </div>
+
+  @if (loading() && !stats()) {
+    <div class="grid">
+      @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+        <div class="skeleton"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="state">
+      <p>{{ error() }}</p>
+      <button type="button" (click)="load()">Retry</button>
+    </div>
+  } @else if (stats(); as data) {
+    <div class="grid">
+      <article><p>Total hostels</p><strong>{{ data.totalHostels }}</strong></article>
+      <article><p>Published</p><strong>{{ data.publishedHostels }}</strong></article>
+      <article><p>Drafts</p><strong>{{ data.draftHostels }}</strong></article>
+      <article><p>Active rooms</p><strong>{{ data.activeRooms }}</strong></article>
+      <article><p>Available beds</p><strong>{{ data.availableBeds }}</strong></article>
+      <article><p>New leads</p><strong>{{ data.newLeads }}</strong></article>
+      <article><p>Bookings</p><strong>{{ data.totalBookings }}</strong></article>
+      <article><p>Pending commission</p><strong>{{ data.pendingCommission }}</strong></article>
+      <article><p>Paid commission</p><strong>{{ data.paidCommission }}</strong></article>
+      <article><p>Commission earned</p><strong>₹{{ data.totalCommission }}</strong></article>
+    </div>
+    @if (data.totalHostels === 0) {
+      <div class="state">
+        <h2>No hostels yet</h2>
+        <p>Add the first listing to start receiving room requests.</p>
+        <a routerLink="/admin/hostels/new">Add hostel</a>
+      </div>
+    }
+  }
+</section>

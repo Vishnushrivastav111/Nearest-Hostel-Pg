@@ -1,0 +1,50 @@
+<div class="shell">
+  <header class="mast">
+    <div class="topbar">
+      <a routerLink="/admin/dashboard" class="brand" (click)="closeMenu()">Admin<span>Console</span></a>
+      <nav class="nav desktop">
+        <a routerLink="/admin/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/admin/hostels" routerLinkActive="active">Hostels</a>
+        <a routerLink="/admin/amenities" routerLinkActive="active">Amenities</a>
+        <a routerLink="/admin/leads" routerLinkActive="active">Leads</a>
+        <a routerLink="/admin/bookings" routerLinkActive="active">Bookings</a>
+        <a routerLink="/admin/commissions" routerLinkActive="active">Commissions</a>
+        <a routerLink="/" target="_blank" rel="noopener">View site</a>
+      </nav>
+      <div class="account">
+        <span class="avatar" [title]="email()">{{ initials() }}</span>
+        <span class="email" [title]="email()">{{ email() }}</span>
+        <button type="button" (click)="signOut()" [disabled]="signingOut()">
+          {{ signingOut() ? 'Signing out…' : 'Sign out' }}
+        </button>
+      </div>
+      <button
+        type="button"
+        class="burger"
+        (click)="toggleMenu()"
+        [attr.aria-expanded]="menuOpen()"
+        aria-label="Open admin menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    @if (menuOpen()) {
+      <nav class="drawer">
+        <p class="drawer-email" [title]="email()">{{ email() }}</p>
+        <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="closeMenu()">Dashboard</a>
+        <a routerLink="/admin/hostels" routerLinkActive="active" (click)="closeMenu()">Hostels</a>
+        <a routerLink="/admin/amenities" routerLinkActive="active" (click)="closeMenu()">Amenities</a>
+        <a routerLink="/admin/leads" routerLinkActive="active" (click)="closeMenu()">Leads</a>
+        <a routerLink="/admin/bookings" routerLinkActive="active" (click)="closeMenu()">Bookings</a>
+        <a routerLink="/admin/commissions" routerLinkActive="active" (click)="closeMenu()">Commissions</a>
+        <a routerLink="/" target="_blank" rel="noopener" (click)="closeMenu()">View site</a>
+        <button type="button" class="drawer-out" (click)="signOut()" [disabled]="signingOut()">
+          {{ signingOut() ? 'Signing out…' : 'Sign out' }}
+        </button>
+      </nav>
+    }
+  </header>
+  <main class="main">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,82 @@
+.uploader { display: grid; gap: 0.75rem; }
+.head h3 { margin: 0; font-size: 1rem; }
+.head p { margin: 0.2rem 0 0; color: var(--ink-soft); font-size: 0.9rem; }
+.drop {
+  display: grid;
+  place-items: center;
+  gap: 0.25rem;
+  min-height: 120px;
+  border: 1.5px dashed var(--line);
+  border-radius: 16px;
+  background: #fff;
+  cursor: pointer;
+  text-align: center;
+  padding: 1rem;
+  position: relative;
+}
+.drop.over { border-color: var(--brand); background: #f0fdfa; }
+.drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.disabled .drop { opacity: 0.6; pointer-events: none; }
+.progress {
+  background: #ecfeff;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0.5rem 0.7rem 0.7rem;
+}
+.bar {
+  height: 6px;
+  background: var(--brand);
+  border-radius: 99px;
+  min-width: 0;
+  transition: width 0.2s ease-out;
+}
+.ok { color: #166534; margin: 0; }
+.err { color: #b91c1c; margin: 0; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.7rem;
+}
+.tile {
+  margin: 0;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.tile.featured { outline: 2px solid var(--brand); }
+.tile img,
+.tile video {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  background: #0f172a;
+  display: block;
+}
+.tile figcaption {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.45rem 0.55rem 0;
+  font-size: 0.78rem;
+}
+.tile small { color: var(--ink-soft); }
+.acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.45rem 0.5rem 0.6rem;
+}
+.acts button,
+.replace {
+  border: 0;
+  background: #ecfeff;
+  color: var(--brand-dark);
+  border-radius: 999px;
+  padding: 0.28rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.replace { position: relative; overflow: hidden; display: inline-grid; place-items: center; }
+.replace input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.danger { background: #fef2f2 !important; color: #b91c1c !important; }

@@ -1,0 +1,87 @@
+<section class="uploader" [class.disabled]="disabled()">
+  <div class="head">
+    <h3>{{ label() }}</h3>
+    @if (hint()) {
+      <p>{{ hint() }}</p>
+    }
+  </div>
+
+  <label
+    class="drop"
+    [class.over]="dragOver()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+  >
+    <input
+      type="file"
+      [accept]="accept()"
+      [multiple]="multiple()"
+      [disabled]="disabled() || uploading()"
+      (change)="onSelect($event)"
+    />
+    <strong>Drag and drop {{ kind() }}s here</strong>
+    <span>or click to choose files</span>
+  </label>
+
+  @if (uploading()) {
+    <div class="progress" role="status">
+      <div class="bar" [style.width.%]="progress()"></div>
+      <p>{{ status() || 'Uploading…' }} {{ progress() }}%</p>
+    </div>
+  } @else if (status()) {
+    <p class="ok" role="status">{{ status() }}</p>
+  }
+  @if (error()) {
+    <p class="err" role="alert">{{ error() }}</p>
+  }
+
+  @if (previews().length) {
+    <div class="grid">
+      @for (preview of previews(); track preview.id) {
+        <figure class="tile pending">
+          @if (kind() === 'video') {
+            <video [src]="preview.url" muted playsinline></video>
+          } @else {
+            <img [src]="preview.url" alt="Preview" />
+          }
+          <figcaption>{{ uploading() ? 'Uploading ' + progress() + '%' : 'Waiting to upload' }}</figcaption>
+        </figure>
+      }
+    </div>
+  }
+
+  @if (items().length) {
+    <div class="grid">
+      @for (asset of items(); track asset.publicId) {
+        <figure class="tile" [class.featured]="featuredPublicId() === asset.publicId">
+          @if (asset.resourceType === 'video') {
+            <video [src]="asset.secureUrl" controls playsinline preload="metadata"></video>
+          } @else {
+            <img [src]="thumb(asset.secureUrl)" [alt]="asset.originalFileName" />
+          }
+          <figcaption>
+            <span>{{ asset.originalFileName }}</span>
+            @if (asset.bytes) {
+              <small>{{ asset.bytes / 1024 | number: '1.0-0' }} KB</small>
+            }
+          </figcaption>
+          <div class="acts">
+            @if (allowFeatured()) {
+              <button type="button" (click)="setFeatured(asset)" [disabled]="disabled()">
+                {{ featuredPublicId() === asset.publicId ? 'Featured' : 'Set featured' }}
+              </button>
+            }
+            <label class="replace">
+              Replace
+              <input type="file" [accept]="accept()" [disabled]="disabled() || uploading()" (change)="replace(asset, $event)" />
+            </label>
+            <button type="button" class="danger" (click)="remove(asset)" [disabled]="disabled() || uploading()">
+              Delete
+            </button>
+          </div>
+        </figure>
+      }
+    </div>
+  }
+</section>

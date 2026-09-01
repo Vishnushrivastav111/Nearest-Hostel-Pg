@@ -1,0 +1,96 @@
+.panel {
+  max-width: 1100px;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: var(--brand-dark);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.actions a,
+.actions button,
+.state a,
+.state button {
+  background: #0f766e;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.65rem 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 0.9rem;
+  margin-top: 1.4rem;
+}
+
+.grid article,
+.skeleton {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1.05rem 1rem 1.1rem;
+  box-shadow: 0 8px 20px rgba(16, 32, 51, 0.04);
+}
+
+.grid p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.grid strong {
+  display: block;
+  margin-top: 0.45rem;
+  font-size: 1.55rem;
+  letter-spacing: -0.03em;
+}
+
+.skeleton {
+  height: 96px;
+  background: #e8eef0;
+}
+
+.state {
+  margin-top: 1.4rem;
+  background: #fff;
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  padding: 1.2rem;
+}
+
+@media (max-width: 720px) {
+  .head {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
