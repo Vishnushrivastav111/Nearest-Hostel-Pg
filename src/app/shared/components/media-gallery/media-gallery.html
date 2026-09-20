@@ -25,7 +25,9 @@
     <div class="videos">
       <h2>Videos</h2>
       @for (video of videos(); track video.publicId) {
-        <video [src]="video.secureUrl" controls playsinline preload="metadata"></video>
+        <div class="video-frame">
+          <video [src]="video.secureUrl" controls playsinline preload="metadata"></video>
+        </div>
       }
     </div>
   }

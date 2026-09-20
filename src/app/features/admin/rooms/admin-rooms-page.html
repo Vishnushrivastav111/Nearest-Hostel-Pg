@@ -1,20 +1,43 @@
 <section class="wrap">
   <a routerLink="/admin/hostels">← Hostels</a>
   <h1>Rooms</h1>
+  <p class="lede">Fill each field below, then click <strong>Add room</strong>. After that you can upload photos for the room.</p>
   @if (error()) { <p class="error">{{ error() }}</p> }
   @if (notice()) { <p class="ok">{{ notice() }}</p> }
   <form [formGroup]="form" (ngSubmit)="add()">
-    <input formControlName="roomName" placeholder="Room name" />
-    <select formControlName="sharingType">
-      @for (type of sharingTypes; track type) { <option [value]="type">{{ type }}</option> }
-    </select>
-    <input formControlName="price" type="number" min="0" placeholder="Price" />
-    <input formControlName="totalBeds" type="number" min="1" placeholder="Total beds" />
-    <input formControlName="availableBeds" type="number" min="0" placeholder="Available beds" />
-    <button type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Add room' }}</button>
+    <label>
+      <span>Room name</span>
+      <small>Example: B4, A-101, Ground floor 2</small>
+      <input formControlName="roomName" placeholder="e.g. B4" />
+    </label>
+    <label>
+      <span>Sharing type</span>
+      <small>How many people share this room</small>
+      <select formControlName="sharingType">
+        @for (type of sharingTypes; track type) { <option [value]="type">{{ type }}</option> }
+      </select>
+    </label>
+    <label>
+      <span>Price (₹ / month)</span>
+      <small>Monthly rent for this room</small>
+      <input formControlName="price" type="number" min="0" placeholder="e.g. 8500" />
+    </label>
+    <label>
+      <span>Total beds</span>
+      <small>Beds in this room</small>
+      <input formControlName="totalBeds" type="number" min="1" placeholder="e.g. 2" />
+    </label>
+    <label>
+      <span>Available beds</span>
+      <small>Beds still open for booking</small>
+      <input formControlName="availableBeds" type="number" min="0" placeholder="e.g. 1" />
+    </label>
+    <div class="actions">
+      <button type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : 'Add room' }}</button>
+    </div>
   </form>
   @if (!rooms().length) {
-    <p>No rooms yet. Add one, then upload photos.</p>
+    <p class="empty">No rooms yet. Add one, then upload photos.</p>
   }
   @for (room of rooms(); track room.id) {
     <article>

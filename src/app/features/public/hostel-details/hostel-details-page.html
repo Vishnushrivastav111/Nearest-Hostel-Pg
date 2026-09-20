@@ -17,79 +17,110 @@
       </aside>
       <div class="content">
         <div class="intro">
-          <p class="meta">{{ typeLabel(item.type) }} · {{ item.area }}, {{ item.city }}</p>
+          <div class="pills">
+            <span class="type-pill">{{ typeLabel(item.type) }}</span>
+            <span class="area-pill">{{ item.area }}, {{ item.city }}</span>
+          </div>
           <h1>{{ item.name }}</h1>
-          <p class="addr">{{ item.address }}</p>
+          <p class="addr">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="12" cy="10" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+            <span>{{ item.address }}</span>
+          </p>
           @if (item.isVerified || item.isFeatured || item.rating) {
-            <p class="badges">
+            <div class="badges">
               @if (item.isVerified) {
-                <span>Verified</span>
+                <span class="badge verified">Verified</span>
               }
               @if (item.isFeatured) {
-                <span>Featured</span>
+                <span class="badge featured">Featured</span>
               }
               @if (item.rating && item.reviewCount) {
-                <span>{{ item.rating | number: '1.1-1' }} · {{ item.reviewCount }} reviews</span>
+                <span class="badge rating">{{ item.rating | number: '1.1-1' }} · {{ item.reviewCount }} reviews</span>
               }
-            </p>
+            </div>
           }
         </div>
-        <p class="desc">{{ item.description || 'Details will be updated soon.' }}</p>
-        <h2>Facilities</h2>
-        <div class="chips">
-          @for (facility of item.facilities; track facility) {
-            <span class="amenity">
-              @if (amenitySrc(facility); as src) {
-                <img [src]="src" [alt]="facility" />
-              }
-              {{ facility }}
-            </span>
-          }
-          @if (!item.facilities.length) {
-            <p>Facilities will be listed after the admin updates this hostel.</p>
-          }
-        </div>
-        <h2>Rooms</h2>
-        @if (!rooms().length) {
-          <p class="desc">No rooms are listed as available yet.</p>
-        } @else {
-          <div class="rooms">
-            @for (room of rooms(); track room.id) {
-              <article>
-                @if (roomImages(room).length) {
-                  <div class="room-photos">
-                    @for (photo of roomImages(room); track photo.publicId) {
-                      <img [src]="photo.secureUrl" [alt]="room.roomName" />
-                    }
-                  </div>
+
+        <section class="desc-card">
+          <h2>About this stay</h2>
+          <p class="desc">{{ item.description || 'Details will be updated soon.' }}</p>
+        </section>
+
+        <section class="block">
+          <h2>Facilities</h2>
+          <div class="chips">
+            @for (facility of item.facilities; track facility) {
+              <span class="amenity">
+                @if (amenitySrc(facility); as src) {
+                  <img [src]="src" [alt]="facility" />
                 }
-                <h3>{{ room.roomName }}</h3>
-                <p>{{ sharingLabel(room.sharingType) }} · {{ room.availableBeds }} beds open</p>
-                <p class="price">{{ price(room.price) }}</p>
-                <button type="button" (click)="openRequest(room.id)">Request this room</button>
-              </article>
+                {{ facility }}
+              </span>
+            }
+            @if (!item.facilities.length) {
+              <p class="empty">Facilities will be listed after the admin updates this hostel.</p>
             }
           </div>
-        }
+        </section>
+
+        <section class="block">
+          <h2>Rooms</h2>
+          @if (!rooms().length) {
+            <p class="empty-card">No rooms are listed as available yet.</p>
+          } @else {
+            <div class="rooms">
+              @for (room of rooms(); track room.id) {
+                <article>
+                  @if (roomImages(room).length) {
+                    <div class="room-photos">
+                      @for (photo of roomImages(room); track photo.publicId) {
+                        <img [src]="photo.secureUrl" [alt]="room.roomName" />
+                      }
+                    </div>
+                  }
+                  <h3>{{ room.roomName }}</h3>
+                  <p>{{ sharingLabel(room.sharingType) }} · {{ room.availableBeds }} beds open</p>
+                  <p class="price">{{ price(room.price) }}</p>
+                  <button type="button" (click)="openRequest(room.id)">Request this room</button>
+                </article>
+              }
+            </div>
+          }
+        </section>
+
         @if (item.mapUrl || (item.latitude && item.longitude) || item.address) {
-          <h2>Location</h2>
-          <p>{{ item.address }}</p>
-          @if (item.mapUrl) {
-            <a class="map-link" [href]="item.mapUrl" target="_blank" rel="noopener">Open map</a>
-          }
+          <section class="location-card">
+            <h2>Location</h2>
+            <p class="location-addr">{{ item.address }}</p>
+            @if (item.area || item.city) {
+              <p class="location-meta">{{ item.area }}{{ item.area && item.city ? ', ' : '' }}{{ item.city }}{{ item.state ? ', ' + item.state : '' }}</p>
+            }
+            @if (item.mapUrl) {
+              <a class="map-link" [href]="item.mapUrl" target="_blank" rel="noopener">Open map</a>
+            }
+          </section>
         }
+
         @if (item.nearbyInfo) {
-          <h2>Nearby</h2>
-          <p class="desc">{{ item.nearbyInfo }}</p>
+          <section class="nearby-card">
+            <h2>Nearby</h2>
+            <p>{{ item.nearbyInfo }}</p>
+          </section>
         }
+
         @if (reviews().length) {
-          <h2>Reviews</h2>
-          @for (review of reviews(); track review.id) {
-            <article class="review">
-              <p><strong>{{ review.userName }}</strong> · {{ review.rating }}/5</p>
-              <p>{{ review.comment }}</p>
-            </article>
-          }
+          <section class="block">
+            <h2>Reviews</h2>
+            @for (review of reviews(); track review.id) {
+              <article class="review">
+                <p><strong>{{ review.userName }}</strong> · {{ review.rating }}/5</p>
+                <p>{{ review.comment }}</p>
+              </article>
+            }
+          </section>
         }
       </div>
     </div>

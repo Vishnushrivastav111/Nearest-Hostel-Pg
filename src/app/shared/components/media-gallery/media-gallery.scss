@@ -1,6 +1,18 @@
+:host {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.gallery {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .hero,
 .placeholder {
   width: 100%;
+  max-width: 100%;
   height: min(52vw, 460px);
   border: 0;
   padding: 0;
@@ -23,8 +35,14 @@
   display: flex;
   gap: 0.45rem;
   overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  min-width: 0;
   margin: 0.75rem 0 1.25rem;
-  padding-bottom: 0.2rem;
+  padding-bottom: 0.35rem;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
 }
 .thumbs button {
   border: 0;
@@ -38,12 +56,44 @@
 }
 .thumbs button.on { outline: 2px solid var(--brand); opacity: 1; }
 .thumbs img { width: 100%; height: 100%; object-fit: cover; }
-.videos { display: grid; gap: 0.8rem; margin: 1rem 0 1.5rem; }
-.videos video {
+.videos {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1rem 0 1.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+.videos h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.videos h2::before {
+  content: '';
+  width: 0.38rem;
+  height: 1.05rem;
+  border-radius: 99px;
+  background: #7c3aed;
+}
+.video-frame {
   width: 100%;
-  max-height: 420px;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
   border-radius: 16px;
-  background: #000;
+  background: #0f172a;
+}
+.videos video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: min(70vw, 420px);
+  object-fit: contain;
+  background: #0f172a;
 }
 .lightbox {
   position: fixed;
