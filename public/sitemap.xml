@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://nearesthostelpg.web.app/</loc>
+    <loc>https://nearesthostelpg.online/</loc>
     <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://nearesthostelpg.web.app/hostels</loc>
+    <loc>https://nearesthostelpg.online/hostels</loc>
     <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://nearesthostelpg.web.app/search</loc>
-    <changefreq>daily</changefreq>
-  </url>
-  <url>
-    <loc>https://nearesthostelpg.web.app/about</loc>
+    <loc>https://nearesthostelpg.online/about</loc>
     <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://nearesthostelpg.web.app/contact</loc>
+    <loc>https://nearesthostelpg.online/contact</loc>
     <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>

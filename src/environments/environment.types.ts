@@ -21,6 +21,8 @@ export interface CloudinaryClientConfig {
 
 export interface AppEnvironment {
   readonly production: boolean;
+  readonly siteUrl: string;
+  readonly siteName: string;
   readonly firebase: FirebaseClientConfig;
   readonly cloudinary: CloudinaryClientConfig;
   readonly functionsRegion: string;

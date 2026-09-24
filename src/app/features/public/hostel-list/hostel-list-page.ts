@@ -57,8 +57,9 @@ export class HostelListPage {
 
   constructor() {
     this.seo.set({
-      title: 'Hostels',
-      description: 'Search published hostels and PGs by city, area, and distance.',
+      title: 'Browse Hostels & PGs',
+      description:
+        'Search verified hostels and PGs by city, area, price, and distance. Compare photos, facilities, and rooms on Nearest Hostel.',
       path: '/hostels',
     });
     afterNextRender(() => {

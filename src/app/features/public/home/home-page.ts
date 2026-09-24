@@ -48,11 +48,13 @@ export class HomePage {
 
   constructor() {
     this.seo.set({
-      title: 'Find Your Perfect Hostel',
+      title: 'Nearest Hostel | Verified PGs & Hostels Near You',
       description:
-        'Find nearest PGs automatically, or search by city and area. Request a room and our team will contact you.',
+        'Find verified PGs and hostels near you. Browse photos, rooms, facilities, and starting prices. Request a room and our team contacts you.',
       path: '/',
+      image: 'https://nearesthostelpg.online/og-image.png',
     });
+    this.seo.setJsonLd(this.seo.organizationJsonLd());
     afterNextRender(() => {
       void this.loadFeatured();
       void this.useMyLocation(false);

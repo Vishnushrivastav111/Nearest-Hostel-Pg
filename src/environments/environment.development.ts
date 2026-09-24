@@ -3,6 +3,8 @@ import { FIREBASE_CLIENT_CONFIG } from './firebase-client.config';
 
 export const environment: AppEnvironment = {
   production: false,
+  siteUrl: 'https://nearesthostelpg.online',
+  siteName: 'Nearest Hostel',
   firebase: FIREBASE_CLIENT_CONFIG,
   cloudinary: {
     cloudName: 'de7oetq23',

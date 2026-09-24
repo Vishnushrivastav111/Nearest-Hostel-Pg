@@ -1,6 +1,7 @@
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
 
 export interface SeoInput {
   readonly title: string;
@@ -15,40 +16,45 @@ export class SeoService {
   private readonly title = inject(Title);
   private readonly meta = inject(Meta);
   private readonly document = inject(DOCUMENT);
-  private readonly platformId = inject(PLATFORM_ID);
+  private readonly siteName = environment.siteName;
+  private readonly siteUrl = environment.siteUrl.replace(/\/$/, '');
 
   set(input: SeoInput): void {
-    const fullTitle = input.title.includes('Nearest Hostel')
+    const fullTitle = input.title.includes(this.siteName)
       ? input.title
-      : `${input.title} | Nearest Hostel`;
-    const description = input.description.slice(0, 180);
+      : `${input.title} | ${this.siteName}`;
+    const description = input.description.slice(0, 160);
+    const path = input.path ?? '/';
+    const url = `${this.siteUrl}${path.startsWith('/') ? path : `/${path}`}`;
+    const image = input.image || `${this.siteUrl}/og-image.png`;
+
     this.title.setTitle(fullTitle);
     this.meta.updateTag({ name: 'description', content: description });
+    this.meta.updateTag({ name: 'application-name', content: this.siteName });
+    this.meta.updateTag({
+      name: 'robots',
+      content: input.noIndex
+        ? 'noindex, nofollow'
+        : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+    });
+
+    this.meta.updateTag({ property: 'og:site_name', content: this.siteName });
     this.meta.updateTag({ property: 'og:title', content: fullTitle });
     this.meta.updateTag({ property: 'og:description', content: description });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
-    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
-    this.meta.updateTag({
-      name: 'robots',
-      content: input.noIndex ? 'noindex, nofollow' : 'index, follow',
-    });
-
-    const origin = isPlatformBrowser(this.platformId)
-      ? this.document.location.origin
-      : 'https://nearesthostelpg.web.app';
-    const url = `${origin}${input.path ?? '/'}`;
     this.meta.updateTag({ property: 'og:url', content: url });
-    this.setCanonical(url);
+    this.meta.updateTag({ property: 'og:image', content: image });
+    this.meta.updateTag({ property: 'og:locale', content: 'en_IN' });
 
-    if (input.image) {
-      this.meta.updateTag({ property: 'og:image', content: input.image });
-    }
+    this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: fullTitle });
+    this.meta.updateTag({ name: 'twitter:description', content: description });
+    this.meta.updateTag({ name: 'twitter:image', content: image });
+
+    this.setCanonical(url);
   }
 
   setJsonLd(data: Record<string, unknown> | null): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
     const existing = this.document.getElementById('hostel-jsonld');
     existing?.remove();
     if (!data) {
@@ -61,10 +67,38 @@ export class SeoService {
     this.document.head.appendChild(script);
   }
 
+  organizationJsonLd(): Record<string, unknown> {
+    return {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'Organization',
+          '@id': `${this.siteUrl}/#organization`,
+          name: this.siteName,
+          url: this.siteUrl,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${this.siteUrl}/icon-512.png`,
+          },
+          description: 'Find verified PGs and hostels near you with photos, rooms, and starting prices.',
+        },
+        {
+          '@type': 'WebSite',
+          '@id': `${this.siteUrl}/#website`,
+          name: this.siteName,
+          url: this.siteUrl,
+          publisher: { '@id': `${this.siteUrl}/#organization` },
+          potentialAction: {
+            '@type': 'SearchAction',
+            target: `${this.siteUrl}/hostels?q={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+          },
+        },
+      ],
+    };
+  }
+
   private setCanonical(url: string): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
     let link = this.document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!link) {
       link = this.document.createElement('link');
